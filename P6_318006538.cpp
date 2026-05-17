@@ -1,11 +1,5 @@
 ﻿/*
-Práctica 5 + 6: Optimización, Carga de Modelos y Texturizado
-- Cámara       : WASD + mouse
-- Coche        : ↑/R = adelante | ↓/F = atrás | ←/→ = lateral
-- Llantas      : giran al avanzar/retroceder
-- Cofre        : O = abrir | C = cerrar
-- Dado 6 caras : textura Dado_emociones.png
-- Dado 8 caras : textura 8Dado.png
+Práctica 6: Carga de Modelos y Texturizado
 */
 #define STB_IMAGE_IMPLEMENTATION
 
