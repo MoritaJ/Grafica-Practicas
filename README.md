@@ -1,1 +1,1 @@
-# Grafica-Practicas
+# Grafica 2026-2
