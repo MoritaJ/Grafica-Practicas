@@ -5,3 +5,8 @@ Se dividio 3
 1.- Agregar su dado de 8 caras y editar sus normales para que las caras del dado sean iluminadas correctamente.
 2.- Apagar con teclado la luz (pointlight) de su lámpara creada para el reporte de la práctica 7.
 3.- Hacer que al presionar una tecla, la luz del faro del coche cicle de color entre rojo, amarillo, verde, cian, azul, magenta
+
+Drive de Video y Modelos
+https://drive.google.com/file/d/1_88-3IK05XmNoYL50JkAInJwNF0eUOG6/view?usp=sharing
+
+
