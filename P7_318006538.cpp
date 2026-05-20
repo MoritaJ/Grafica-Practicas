@@ -49,8 +49,8 @@ Texture dado8Texture;
 Texture cauchoTexture;
 Texture metalTexture;
 Texture ojosTexture;
-Texture AgaveTexture;
-Texture concretaTexture;
+//Texture AgaveTexture;
+Texture lamparaTexture;
 
 // ── Modelos Auto ────────────────────────────────────────────
 Model Carroceria_M;
@@ -64,7 +64,10 @@ Model RinDD_M, RinDT_M, RinID_M, RinIT_M;
 Model Kitt_M;
 Model Llanta_M;
 Model Blackhawk_M;
-Model Alumbrado_M;
+
+// ── Lampara ─────────────────────────────────────────────
+Model Lamp_M;
+bool lampOn = true;
 
 // ── Materiales ────────────────────────────────────────────────────────────────
 Material Material_brillante;
@@ -83,6 +86,17 @@ const float WHEEL_SPEED = 90.0f;
 float hoodAngle = 0.0f;
 const float HOOD_SPEED = 45.0f;
 const float HOOD_MAX = 45.0f;
+
+// ── Control de luces ───────────────────────────────────────────────────────
+int faroColorIndex = 0;
+glm::vec3 faroColores[] = {
+    glm::vec3(1.0f, 0.0f, 0.0f),  // rojo
+    glm::vec3(1.0f, 1.0f, 0.0f),  // amarillo
+    glm::vec3(0.0f, 1.0f, 0.0f),  // verde
+    glm::vec3(0.0f, 1.0f, 1.0f),  // cian
+    glm::vec3(0.0f, 0.0f, 1.0f),  // azul
+    glm::vec3(1.0f, 0.0f, 1.0f),  // magenta
+};
 
 // ── Estado del helicóptero ────────────────────────────────────────────────────
 glm::vec3 heliPosition = glm::vec3(0.0f, 5.0f, 6.0f);
@@ -187,30 +201,30 @@ void CrearDado()
          0.5f, 0.5f, 0.5f,  0.6653f,0.2490f,  0.0f,0.0f,-1.0f,
         -0.5f, 0.5f, 0.5f,  0.3346f,0.2490f,  0.0f,0.0f,-1.0f,
         // right
-         0.5f,-0.5f, 0.5f,  0.3423f,0.7520f,  -1.0f,0.0f,0.0f,
-         0.5f,-0.5f,-0.5f,  0.6615f,0.7520f,  -1.0f,0.0f,0.0f,
-         0.5f, 0.5f,-0.5f,  0.6615f,0.9912f,  -1.0f,0.0f,0.0f,
-         0.5f, 0.5f, 0.5f,  0.3423f,0.9912f,  -1.0f,0.0f,0.0f,
-         // back
-         -0.5f,-0.5f,-0.5f,  0.3372f,0.2539f,  0.0f,0.0f,1.0f,
-          0.5f,-0.5f,-0.5f,  0.6627f,0.2539f,  0.0f,0.0f,1.0f,
-          0.5f, 0.5f,-0.5f,  0.6627f,0.5029f,  0.0f,0.0f,1.0f,
-         -0.5f, 0.5f,-0.5f,  0.3372f,0.5029f,  0.0f,0.0f,1.0f,
-         // left
-         -0.5f,-0.5f,-0.5f,  0.3346f,0.5029f,  1.0f,0.0f,0.0f,
-         -0.5f,-0.5f, 0.5f,  0.6627f,0.5029f,  1.0f,0.0f,0.0f,
-         -0.5f, 0.5f, 0.5f,  0.6627f,0.7520f,  1.0f,0.0f,0.0f,
-         -0.5f, 0.5f,-0.5f,  0.3346f,0.7520f,  1.0f,0.0f,0.0f,
-         // bottom
-         -0.5f,-0.5f, 0.5f,  0.0090f,0.5029f,  0.0f,1.0f,0.0f,
-          0.5f,-0.5f, 0.5f,  0.3346f,0.5029f,  0.0f,1.0f,0.0f,
-          0.5f,-0.5f,-0.5f,  0.3346f,0.7520f,  0.0f,1.0f,0.0f,
-         -0.5f,-0.5f,-0.5f,  0.0090f,0.7520f,  0.0f,1.0f,0.0f,
-         // top
-         -0.5f,0.5f, 0.5f,   0.6691f,0.5029f,  0.0f,-1.0f,0.0f,
-          0.5f,0.5f, 0.5f,   0.9910f,0.5029f,  0.0f,-1.0f,0.0f,
-          0.5f,0.5f,-0.5f,   0.9910f,0.7520f,  0.0f,-1.0f,0.0f,
-         -0.5f,0.5f,-0.5f,   0.6691f,0.7520f,  0.0f,-1.0f,0.0f,
+        0.5f,-0.5f, 0.5f,  0.3423f,0.7520f,  -1.0f,0.0f,0.0f,
+        0.5f,-0.5f,-0.5f,  0.6615f,0.7520f,  -1.0f,0.0f,0.0f,
+        0.5f, 0.5f,-0.5f,  0.6615f,0.9912f,  -1.0f,0.0f,0.0f,
+        0.5f, 0.5f, 0.5f,  0.3423f,0.9912f,  -1.0f,0.0f,0.0f,
+        // back  
+        -0.5f,-0.5f,-0.5f,  0.6641f,0.2793f,  0.0f,0.0f,1.0f,
+        0.5f,-0.5f,-0.5f,  0.3385f,0.2793f,  0.0f,0.0f,1.0f,
+        0.5f, 0.5f,-0.5f,  0.3385f,0.4990f,  0.0f,0.0f,1.0f,
+        -0.5f, 0.5f,-0.5f,  0.6641f,0.4990f,  0.0f,0.0f,1.0f,
+        // left
+        -0.5f,-0.5f,-0.5f,  0.3346f,0.5029f,  1.0f,0.0f,0.0f,
+        -0.5f,-0.5f, 0.5f,  0.6627f,0.5029f,  1.0f,0.0f,0.0f,
+        -0.5f, 0.5f, 0.5f,  0.6627f,0.7520f,  1.0f,0.0f,0.0f,
+        -0.5f, 0.5f,-0.5f,  0.3346f,0.7520f,  1.0f,0.0f,0.0f,
+        // bottom 
+        -0.5f,-0.5f, 0.5f,  0.3346f,0.5010f,  0.0f,1.0f,0.0f,
+        0.5f,-0.5f, 0.5f,  0.0103f,0.5010f,  0.0f,1.0f,0.0f,
+        0.5f,-0.5f,-0.5f,  0.0103f,0.7480f,  0.0f,1.0f,0.0f,
+        -0.5f,-0.5f,-0.5f,  0.3346f,0.7480f,  0.0f,1.0f,0.0f,
+        // top
+        -0.5f,0.5f, 0.5f,   0.6691f,0.5029f,  0.0f,-1.0f,0.0f,
+        0.5f,0.5f, 0.5f,   0.9910f,0.5029f,  0.0f,-1.0f,0.0f,
+        0.5f,0.5f,-0.5f,   0.9910f,0.7520f,  0.0f,-1.0f,0.0f,
+        -0.5f,0.5f,-0.5f,   0.6691f,0.7520f,  0.0f,-1.0f,0.0f,
     };
     Mesh* dado = new Mesh();
     dado->CreateMesh(cubo_vertices, cubo_indices, 192, 36);
@@ -221,38 +235,38 @@ void CrearDado()
 void CrearDado8()
 {
     GLfloat oct_vertices[] = {
-        // Cara 1
-         0.0f, 1.0f, 0.0f,  0.7540f,0.0000f,  0.0f, 0.5f, 0.5f,
-        -1.0f, 0.0f, 0.0f,  0.5000f,0.2483f,  0.0f, 0.5f, 0.5f,
-         0.0f, 0.0f, 1.0f,  1.0000f,0.2483f,  0.0f, 0.5f, 0.5f,
-         // Cara 2
-          0.0f,-1.0f, 0.0f,  0.7600f,0.4965f,  0.0f,-0.5f, 0.5f,
-          0.0f, 0.0f, 1.0f,  0.5000f,0.2483f,  0.0f,-0.5f, 0.5f,
-         -1.0f, 0.0f, 0.0f,  1.0000f,0.2483f,  0.0f,-0.5f, 0.5f,
-         // Cara 3
-          0.0f, 1.0f, 0.0f,  0.7600f,0.4965f,  0.5f, 0.5f, 0.0f,
-          0.0f, 0.0f, 1.0f,  0.5000f,0.7448f,  0.5f, 0.5f, 0.0f,
-          1.0f, 0.0f, 0.0f,  1.0000f,0.7448f,  0.5f, 0.5f, 0.0f,
-         // Cara 4
-          0.0f,-1.0f, 0.0f,  0.7520f,0.9931f,  0.5f,-0.5f, 0.0f,
-          1.0f, 0.0f, 0.0f,  0.5000f,0.7448f,  0.5f,-0.5f, 0.0f,
-          0.0f, 0.0f, 1.0f,  1.0000f,0.7448f,  0.5f,-0.5f, 0.0f,
-         // Cara 5
-           0.0f, 1.0f, 0.0f,  0.0000f,0.2483f,  0.0f, 0.5f,-0.5f,
-           1.0f, 0.0f, 0.0f,  0.2400f,0.4965f,  0.0f, 0.5f,-0.5f,
-           0.0f, 0.0f,-1.0f,  0.5000f,0.2483f,  0.0f, 0.5f,-0.5f,
-         // Cara 6
-             0.0f,-1.0f, 0.0f,  0.5000f,0.2483f,  0.0f,-0.5f,-0.5f,
-             0.0f, 0.0f,-1.0f,  0.7540f,0.4965f,  0.0f,-0.5f,-0.5f,
-             1.0f, 0.0f, 0.0f,  0.2400f,0.4965f,  0.0f,-0.5f,-0.5f,
-         // Cara 7
-              0.0f, 1.0f, 0.0f,  0.5000f,0.7448f, -0.5f, 0.5f, 0.0f,
-              0.0f, 0.0f,-1.0f,  0.2400f,0.4965f, -0.5f, 0.5f, 0.0f,
-             -1.0f, 0.0f, 0.0f,  0.7540f,0.4965f, -0.5f, 0.5f, 0.0f,
-          // Cara 8
-              0.0f,-1.0f, 0.0f,  0.0000f,0.7448f, -0.5f,-0.5f, 0.0f,
-             -1.0f, 0.0f, 0.0f,  0.5000f,0.7448f, -0.5f,-0.5f, 0.0f,
-              0.0f, 0.0f,-1.0f,  0.2400f,0.4965f, -0.5f,-0.5f, 0.0f,
+    // Cara 1 — número "8"
+    0.0f, 1.0f, 0.0f,  0.7540f,0.0000f,  0.0f, 0.5f, 0.5f,
+    -1.0f, 0.0f, 0.0f, 0.5000f,0.2483f,  0.0f, 0.5f, 0.5f,
+    0.0f, 0.0f, 1.0f,  1.0000f,0.2483f,  0.0f, 0.5f, 0.5f,
+    // Cara 2 — número "6"
+    0.0f,-1.0f, 0.0f,  1.0000f,0.2483f,  0.0f,-0.5f, 0.5f,
+    0.0f, 0.0f, 1.0f,  0.7600f,0.4965f,  0.0f,-0.5f, 0.5f,
+    -1.0f, 0.0f, 0.0f,  0.5000f,0.2483f,  0.0f,-0.5f, 0.5f,
+    // Cara 3 — número "7"
+    0.0f, 1.0f, 0.0f,  1.0000f,0.7448f,  -0.5f, 0.5f, 0.0f,
+    0.0f, 0.0f, 1.0f,  0.5000f,0.7448f,  -0.5f, 0.5f, 0.0f,
+    1.0f, 0.0f, 0.0f,  0.7600f,0.4965f,  -0.5f, 0.5f, 0.0f,
+    // Cara 4 — número "5"
+    0.0f,-1.0f, 0.0f,  0.7520f,0.9931f,  -0.5f,-0.5f, 0.0f,
+    1.0f, 0.0f, 0.0f,  0.5000f,0.7448f,  -0.5f,-0.5f, 0.0f,
+    0.0f, 0.0f, 1.0f,  1.0000f,0.7448f,  -0.5f,-0.5f, 0.0f,
+    // Cara 5 — número "2"
+    0.0f, 1.0f, 0.0f,  0.0000f,0.2483f,  0.0f, 0.5f,-0.5f,
+    1.0f, 0.0f, 0.0f,  0.5000f,0.2483f,  0.0f, 0.5f,-0.5f,
+    0.0f, 0.0f,-1.0f,  0.2400f,0.4965f,  0.0f, 0.5f,-0.5f,
+    // Cara 6 — número "4"
+    0.0f,-1.0f, 0.0f,  0.5000f,0.2483f,  0.0f,-0.5f,-0.5f,
+    0.0f, 0.0f,-1.0f,  0.7600f,0.4965f,  0.0f,-0.5f,-0.5f,
+    1.0f, 0.0f, 0.0f,  0.2460f,0.4965f,  0.0f,-0.5f,-0.5f,
+    // Cara 7 — número "1"
+     0.0f, 1.0f, 0.0f,  0.5000f,0.7448f,  -0.5f, 0.5f, 0.0f,
+    0.0f, 0.0f,-1.0f,  0.2400f,0.4965f,  -0.5f, 0.5f, 0.0f,
+    -1.0f, 0.0f, 0.0f,  0.7540f,0.4965f,  -0.5f, 0.5f, 0.0f,
+    // Cara 8 — número "3"
+    0.0f,-1.0f, 0.0f,  0.0000f,0.7448f,  -0.5f,-0.5f, 0.0f,
+    -1.0f, 0.0f, 0.0f, 0.2400f,0.4965f,  -0.5f,-0.5f, 0.0f,
+    0.0f, 0.0f,-1.0f,  0.5000f,0.7448f,  -0.5f,-0.5f, 0.0f,
     };
     unsigned int oct_indices[] = {
         0,1,2,  3,4,5,  6,7,8,  9,10,11,
@@ -262,7 +276,6 @@ void CrearDado8()
     dado8->CreateMesh(oct_vertices, oct_indices, 192, 24);
     meshList.push_back(dado8); // [5]
 }
-
 void CreateShaders()
 {
     Shader* shader1 = new Shader();
@@ -273,11 +286,11 @@ void CreateShaders()
 // ── Input del coche ──────────────────────────────────────────────────────
 void ProcessCarInput(bool* keys, GLfloat dt)
 {
-    if (keys[GLFW_KEY_UP] || keys[GLFW_KEY_R]) {
+    if (keys[GLFW_KEY_UP]) {
         carPosition.z -= CAR_SPEED * dt;
         wheelAngle += WHEEL_SPEED * dt;
     }
-    if (keys[GLFW_KEY_DOWN] || keys[GLFW_KEY_F]) {
+    if (keys[GLFW_KEY_DOWN]) {
         carPosition.z += CAR_SPEED * dt;
         wheelAngle -= WHEEL_SPEED * dt;
     }
@@ -288,6 +301,14 @@ void ProcessCarInput(bool* keys, GLfloat dt)
 
     if (keys[GLFW_KEY_O]) hoodAngle = glm::min(hoodAngle + HOOD_SPEED * dt, HOOD_MAX);
     if (keys[GLFW_KEY_C]) hoodAngle = glm::max(hoodAngle - HOOD_SPEED * dt, 0.0f);
+
+    // Faro (cambia color con tecla F)
+    static bool fPressed = false;
+    if (keys[GLFW_KEY_F] && !fPressed) {
+        faroColorIndex = (faroColorIndex + 1) % 6;
+        fPressed = true;
+    }
+    if (!keys[GLFW_KEY_F]) fPressed = false;
 }
 
 //── Input del Blackhawk ──────────────────────────────────────────────────────
@@ -295,6 +316,17 @@ void ProcessHeliInput(bool* keys, GLfloat dt)
 {
     if (keys[GLFW_KEY_I]) heliPosition.z -= HELI_SPEED * dt;
     if (keys[GLFW_KEY_K]) heliPosition.z += HELI_SPEED * dt;
+}
+
+//── Input del Lampara ─────────────────────────────────────────────
+void ProcessLampInput(bool* keys, GLfloat dt)
+{
+    static bool lPressed = false;
+    if (keys[GLFW_KEY_M] && !lPressed) {
+        lampOn = !lampOn;
+        lPressed = true;
+    }
+    if (!keys[GLFW_KEY_M]) lPressed = false;
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -319,9 +351,9 @@ int main()
     cauchoTexture = Texture("Textures/Caucho.png");            cauchoTexture.LoadTextureA();
     metalTexture = Texture("Textures/metal.png");             metalTexture.LoadTextureA();
     ojosTexture = Texture("Textures/ojitos.png");             ojosTexture.LoadTextureA();
-    AgaveTexture = Texture("Textures/Agave.tga");             AgaveTexture.LoadTextureA();
-    concretaTexture = Texture("Textures/grey-concrete-texture.jpg"); concretaTexture.LoadTexture();
-
+    //AgaveTexture = Texture("Textures/Agave.tga");             AgaveTexture.LoadTextureA();
+    lamparaTexture = Texture("Textures/lam.png");               lamparaTexture.LoadTexture();
+    
     // ── Modelos Auto  ───────────────────────────────────────
     Carroceria_M = Model(); Carroceria_M.LoadModel("Models/Carroceria.obj");
     Cofre_M = Model(); Cofre_M.LoadModel("Models/Cofre.obj");
@@ -344,8 +376,7 @@ int main()
     Blackhawk_M = Model(); Blackhawk_M.LoadModel("Models/uh60.obj");
 
     // ── Modelos  ─────────────────────────────────────────
-	Model Alumbrado_M; Alumbrado_M.LoadModel("Models/Alumbrado2.obj");
-
+    Lamp_M = Model(); Lamp_M.LoadModel("Models/Lamp.obj");
 
     // ── Skybox ────────────────────────────────────────────────────────────────
     std::vector<std::string> skyboxFaces;
@@ -402,13 +433,19 @@ int main()
     spotLights[3] = SpotLight(1.0f, 1.0f, 0.0f,   // amarillo
         0.0f, 2.0f,
         0.0f, 0.0f, 0.0f,
-        0.0f, -1.0f, 0.0f,                          // apunta hacia abajo
+        0.0f, -1.0f, 0.0f,                         // apunta hacia abajo
         1.0f, 0.0f, 0.0f,
         20.0f);
     spotLightCount++;
     pointLights[1] = PointLight(1.0f, 1.0f, 1.0f,   // blanco
         0.0f, 2.0f,
         0.0f, 1.5f, -5.0f,                            // posición: ajusta según donde pongas la lámpara
+        0.3f, 0.2f, 0.1f);
+    pointLightCount++;
+    //Lampara 
+    pointLights[1] = PointLight(1.0f, 1.0f, 1.0f,
+        0.0f, 1.0f,
+        0.0f, -4.0f, -10.0f,
         0.3f, 0.2f, 0.1f);
     pointLightCount++;
 
@@ -435,6 +472,7 @@ int main()
         camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
         ProcessCarInput(mainWindow.getsKeys(), deltaTime);
         ProcessHeliInput(mainWindow.getsKeys(), deltaTime);
+        ProcessLampInput(mainWindow.getsKeys(), deltaTime);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -460,16 +498,38 @@ int main()
         glm::vec3 lowerLight = camera.getCameraPosition();
         lowerLight.y -= 0.3f;
         spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+        
+        // Lampara  
+       
+        // Luego el toggle
+        if (lampOn) {
+            pointLights[1] = PointLight(1.0f, 1.0f, 1.0f,
+                0.0f, 1.0f,
+                0.0f, -4.0f, -10.0f,
+                0.5f, 0.3f, 0.1f);
+        }
+        else {
+            pointLights[1] = PointLight(0.0f, 0.0f, 0.0f,
+                0.0f, 0.0f,
+                0.0f, -4.0f, -10.0f,
+                0.5f, 0.3f, 0.1f);
+        }
 
-        // Faro frontal — se mueve con el coche
-        // Posición: enfrente del coche, a la altura del faro
-        glm::vec3 faroPos = carPosition + glm::vec3(2.0f, 1.5f, -1.5f);
-        glm::vec3 faroDir = glm::vec3(0.0f, -0.2f, -1.0f); // apunta hacia adelante y ligeramente abajo
-        spotLights[2].SetFlash(faroPos, faroDir);
+        // Faro frontal — se mueve con el coche, color variable con F
+        glm::vec3 faroPos = carPosition + glm::vec3(2.2f, 5.5f, 2.0f);
+        glm::vec3 faroDir = glm::vec3(0.0f, -0.2f, -1.0f);
+        spotLights[2] = SpotLight(
+            faroColores[faroColorIndex].r,
+            faroColores[faroColorIndex].g,
+            faroColores[faroColorIndex].b,
+            0.0f, 2.0f,
+            faroPos.x, faroPos.y, faroPos.z,
+            faroDir.x, faroDir.y, faroDir.z,
+            1.0f, 0.0f, 0.0f, 25.0f);
 
         // Foco helicóptero — se mueve con él
         glm::vec3 heliLightPos = heliPosition + glm::vec3(0.0f, -0.5f, 0.0f);
-        glm::vec3 heliLightDir = glm::vec3(0.0f, -1.0f, 0.0f); // hacia el piso
+        glm::vec3 heliLightDir = glm::vec3(0.0f, -1.0f, 0.0f); 
         spotLights[3].SetFlash(heliLightPos, heliLightDir);
 
         // Enviar luces al shader
@@ -510,25 +570,26 @@ int main()
         meshList[5]->RenderMesh();
 
         // ── COCHE ARTICULADO ─────────────────────────────────────────────
-        color = glm::vec3(0.0f, 0.3f, 0.8f);   // azul
+        color = glm::vec3(1.0f, 1.0f, 1.0f);
         model = glm::mat4(1.0f);
         model = glm::translate(model, carPosition);
         model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         glUniform3fv(uniformColor, 1, glm::value_ptr(color));
         Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        metalTexture.UseTexture();
         Carroceria_M.RenderModel();
 
-        glm::mat4 carBase = model;   // padre jerárquico
+        glm::mat4 carBase = model;
 
         // Parabrisas
         color = glm::vec3(1.0f, 1.0f, 1.0f);
         glUniform3fv(uniformColor, 1, glm::value_ptr(color));
         modelaux = carBase;
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        ojosTexture.UseTexture();        
-        Parabrisas_M.RenderModel();     // ← usa RenderModel normal
-       
+        ojosTexture.UseTexture();
+        Parabrisas_M.RenderModel();
+
         // Faros
         modelaux = carBase;
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
@@ -536,13 +597,15 @@ int main()
         Faros_M.RenderModel();
 
         // Cofre (articulado con tecla O/C)
-        color = glm::vec3(0.0f, 0.3f, 0.8f);
+        color = glm::vec3(1.0f, 1.0f, 1.0f);
         modelaux = carBase;
         modelaux = glm::translate(modelaux, glm::vec3(0.0f, 0.5f, 1.8f));
         modelaux = glm::rotate(modelaux, hoodAngle * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
         modelaux = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, -0.5f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
         glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+        Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        metalTexture.UseTexture();
         Cofre_M.RenderModel();
 
         // Llantas
@@ -554,25 +617,29 @@ int main()
         modelaux = glm::translate(modelaux, glm::vec3(1.3f, -0.55f, 1.4f));
         modelaux = glm::rotate(modelaux, glm::radians(wheelAngle), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        LlantaDD_M.RenderModelWithTexture(&cauchoTexture);
+        cauchoTexture.UseTexture();
+        LlantaDD_M.RenderModel();
 
         modelaux = carBase;
         modelaux = glm::translate(modelaux, glm::vec3(1.3f, -0.55f, -1.4f));
         modelaux = glm::rotate(modelaux, glm::radians(wheelAngle), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        LlantaDT_M.RenderModelWithTexture(&cauchoTexture);
+        cauchoTexture.UseTexture();
+        LlantaDT_M.RenderModel();
 
         modelaux = carBase;
         modelaux = glm::translate(modelaux, glm::vec3(-1.3f, -0.55f, 1.4f));
         modelaux = glm::rotate(modelaux, glm::radians(wheelAngle), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        LlantaID_M.RenderModelWithTexture(&cauchoTexture);
+        cauchoTexture.UseTexture();
+        LlantaID_M.RenderModel();
 
         modelaux = carBase;
         modelaux = glm::translate(modelaux, glm::vec3(-1.3f, -0.55f, -1.4f));
         modelaux = glm::rotate(modelaux, glm::radians(wheelAngle), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        LlantaIT_M.RenderModelWithTexture(&cauchoTexture);
+        cauchoTexture.UseTexture();
+        LlantaIT_M.RenderModel();
 
         // Rines
         Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -581,75 +648,44 @@ int main()
         modelaux = glm::translate(modelaux, glm::vec3(1.3f, -0.55f, 1.4f));
         modelaux = glm::rotate(modelaux, glm::radians(wheelAngle), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        RinDD_M.RenderModelWithTexture(&metalTexture);
+        metalTexture.UseTexture();
+        RinDD_M.RenderModel();
 
         modelaux = carBase;
         modelaux = glm::translate(modelaux, glm::vec3(1.3f, -0.55f, -1.4f));
         modelaux = glm::rotate(modelaux, glm::radians(wheelAngle), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        RinDT_M.RenderModelWithTexture(&metalTexture);
+        metalTexture.UseTexture();
+        RinDT_M.RenderModel();
 
         modelaux = carBase;
         modelaux = glm::translate(modelaux, glm::vec3(-1.3f, -0.55f, 1.4f));
         modelaux = glm::rotate(modelaux, glm::radians(wheelAngle), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        RinID_M.RenderModelWithTexture(&metalTexture);
+        metalTexture.UseTexture();
+        RinID_M.RenderModel();
 
         modelaux = carBase;
         modelaux = glm::translate(modelaux, glm::vec3(-1.3f, -0.55f, -1.4f));
         modelaux = glm::rotate(modelaux, glm::radians(wheelAngle), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        RinIT_M.RenderModelWithTexture(&metalTexture);
-
-        // ── KITT + LLANTAS ───────────────────────────────────────────────
+        metalTexture.UseTexture();
+        RinIT_M.RenderModel();
+       
+        // ── LÁMPARA ───────────────────────────────────────────────────────────────
         color = glm::vec3(1.0f, 1.0f, 1.0f);
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f + mainWindow.getmuevex(), 0.5f, -3.0f));
-        glm::mat4 kittBase = model;
-        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-        model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(0.0f, -1.3f, -10.0f));
+        model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         glUniform3fv(uniformColor, 1, glm::value_ptr(color));
         Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-        Kitt_M.RenderModel();
+        lamparaTexture.UseTexture();
+        Lamp_M.RenderModel();
 
-        // Llantas de Kitt
-        color = glm::vec3(0.5f, 0.5f, 0.5f);
-        glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-        Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-
-        modelaux = kittBase;
-        modelaux = glm::translate(modelaux, glm::vec3(7.0f, -0.5f, 8.0f));
-        modelaux = glm::rotate(modelaux, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelaux = glm::scale(modelaux, glm::vec3(0.4f, 0.4f, 0.4f));
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        Llanta_M.RenderModel();
-
-        modelaux = kittBase;
-        modelaux = glm::translate(modelaux, glm::vec3(15.5f, -0.5f, 8.0f));
-        modelaux = glm::rotate(modelaux, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelaux = glm::scale(modelaux, glm::vec3(0.4f, 0.4f, 0.4f));
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        Llanta_M.RenderModel();
-
-        modelaux = kittBase;
-        modelaux = glm::translate(modelaux, glm::vec3(7.0f, -0.5f, 1.5f));
-        modelaux = glm::rotate(modelaux, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelaux = glm::scale(modelaux, glm::vec3(0.4f, 0.4f, 0.4f));
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        Llanta_M.RenderModel();
-
-        modelaux = kittBase;
-        modelaux = glm::translate(modelaux, glm::vec3(15.5f, -0.5f, 1.5f));
-        modelaux = glm::rotate(modelaux, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelaux = glm::scale(modelaux, glm::vec3(0.4f, 0.4f, 0.4f));
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
-        Llanta_M.RenderModel();
-
-       
        // ── BLACKHAWK ─────────────────────────────────────────────────────────────
         model = glm::mat4(1.0f);
-        model = glm::translate(model, heliPosition);  // ← usa la variable
+        model = glm::translate(model, heliPosition);  
         model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
         model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -669,15 +705,7 @@ int main()
         meshList[3]->RenderMesh();
         glDisable(GL_BLEND);*/
 
-        // ── LÁMPARA ───────────────────────────────────────────────────────────────
-        color = glm::vec3(1.0f, 1.0f, 1.0f);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -2.0f, -5.0f)); // misma posición que la luz
-        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-        Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-        Alumbrado_M.RenderModel();
+      
 
         glUseProgram(0);
         mainWindow.swapBuffers();
