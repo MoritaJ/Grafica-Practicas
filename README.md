@@ -1,4 +1,4 @@
-# Ejercicio de Case Iluminación 
+# Ejercicio de Clase 7 Iluminación 
 
 Descripción
 Escena 3D en OpenGL con iluminación direccional, puntual y spotlight aplicada sobre modelos texturizados con jerarquía de transformaciones.
